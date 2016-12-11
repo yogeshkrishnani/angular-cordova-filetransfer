@@ -1,0 +1,26 @@
+{
+  "name": "angular-cordova-filetransfer",
+  "version": "1.0.0",
+  "description": "Angular factory which provides cordova file transfer methods",
+  "main": "src/angular-cordova-filetransfer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yogeshkrishnani/angular-cordova-filetransfer.git"
+  },
+  "keywords": [
+    "Angular",
+    "Cordova",
+    "FileTransfer",
+    "File",
+    "Transfer"
+  ],
+  "author": "Yogesh Krishnani <yogesh.h.krishnani@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yogeshkrishnani/angular-cordova-filetransfer/issues"
+  },
+  "homepage": "https://github.com/yogeshkrishnani/angular-cordova-filetransfer#readme"
+}

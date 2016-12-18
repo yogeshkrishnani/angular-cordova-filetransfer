@@ -11,11 +11,12 @@
     "url": "git+https://github.com/yogeshkrishnani/angular-cordova-filetransfer.git"
   },
   "keywords": [
-    "Angular",
-    "Cordova",
-    "FileTransfer",
-    "File",
-    "Transfer"
+    "angular",
+    "cordova",
+    "fileTransfer",
+    "file transfer",
+    "file",
+    "transfer"
   ],
   "author": "Yogesh Krishnani <yogesh.h.krishnani@gmail.com>",
   "license": "ISC",

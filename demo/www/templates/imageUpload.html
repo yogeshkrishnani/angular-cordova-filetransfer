@@ -1,0 +1,21 @@
+<ion-view view-title="Angular Cordova File Transfer">
+  <ion-content padding="true">
+		<div class="fileTransferDemo">
+			
+			<br/>
+			
+				<img ng-src="{{ imageUrl }}" ng-show="imageUrl"/>
+		
+			<br/>
+			<br/>
+			
+			<button class="button button-positive" ng-click="selectImage()" ng-show="showImageSelectButton">Select Image To Upload</button>
+			
+			<br/>
+			<br/>
+			
+			<button class="button button-positive" ng-click="uploadImage()" ng-show="imageUrl && imageSelected">Upload Image</button>
+			
+		</div>
+  </ion-content>
+</ion-view>

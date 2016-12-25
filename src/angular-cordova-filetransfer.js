@@ -4,12 +4,12 @@ angular.module('starter.services').factory('AngularCordovaFileTransfer', ['$q', 
 	
 	AngularCordovaFileTransfer.uploadFile = function (serverURI, fileURI, fileName) {
     	
-    	if(angular.isUndefined(fileName)) {
-    		fileName = fileURI.substr( fileURI.lastIndexOf("/") + 1 );
-    	}
-    	
-    	var q = $q.defer();
-    	var uri = encodeURI(serverURI);
+		if(angular.isUndefined(fileName)) {
+			fileName = fileURI.substr( fileURI.lastIndexOf("/") + 1 );
+		}
+
+		var q = $q.defer();
+		var uri = encodeURI(serverURI);
 		
 		var options = new FileUploadOptions();
 		options.fileKey = "file";
@@ -31,8 +31,8 @@ angular.module('starter.services').factory('AngularCordovaFileTransfer', ['$q', 
 
 
 		ft.upload(fileURI, uri, win, fail, options);
-							
-		return q.promise;				
+
+		return q.promise;
     };
 
     AngularCordovaFileTransfer.downloadFile = function (serverURI, fileURI) {
@@ -59,7 +59,7 @@ angular.module('starter.services').factory('AngularCordovaFileTransfer', ['$q', 
 		ft.download(uri, fileURI, win, fail, options);
 							
 		return q.promise;
-						
+
     };
     
     AngularCordovaFileTransfer.uploadMultipleFiles = function(serverURI, files) {

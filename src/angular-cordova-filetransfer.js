@@ -1,81 +1,89 @@
-angular.module('app').factory('CordovaFileTransfer', ['$q', function ($q) {
-	 
-	var CordovaFileTransfer = {};
-
-	CordovaFileTransfer.uploadFile = function (fileURI, fileName) {
-
-		if(angular.isUndefined(fileName)) {
-			fileName = fileURI.substr( fileURI.lastIndexOf("/") + 1 );
-		}
-		 
-		var q = $q.defer();   
-		var uri = encodeURI(config.fileUploadServlet);
-
+angular.module('starter.services').factory('AngularCordovaFileTransfer', ['$q', function ($q) {
+    	
+	var AngularCordovaFileTransfer = {};
+	
+	AngularCordovaFileTransfer.uploadFile = function (serverURI, fileURI, fileName) {
+    	
+    	if(angular.isUndefined(fileName)) {
+    		fileName = fileURI.substr( fileURI.lastIndexOf("/") + 1 );
+    	}
+    	
+    	var q = $q.defer();
+    	var uri = encodeURI(serverURI);
+		
 		var options = new FileUploadOptions();
-		options.fileKey="file";
-		options.fileName=fileName;
-
+		options.fileKey = "file";
+		options.fileName = fileName;
+		
 		var ft = new FileTransfer();
 
 		function win(r) {
-			console.log(JSON.stringify(r));
-			q.resolve(r.response);
+			q.resolve(r);
 		}
 
 		function fail(e) {
-			console.log(JSON.stringify(e));
 			q.reject(e);
 		}
-	  
-		console.log("Uploading File");
-		console.log("fileURI : " + fileURI);
-		console.log("fileName : " + fileName);
 
-		if(fileURI.startsWith('http') || fileURI.startsWith('https')){//File is already on server
-			var response = {
-			"fileName" : fileName,
-			"successMessage" : "File Uploaded",
-			"status" : 200
-			}
-			q.resolve(JSON.stringify(response));
-		} 
-		else {//Local file
-			ft.upload(fileURI, uri, win, fail, options);
+		ft.onprogress = function (progress) {
+			q.notify(progress);
+		};
+
+
+		ft.upload(fileURI, uri, win, fail, options);
+							
+		return q.promise;				
+    };
+
+    AngularCordovaFileTransfer.downloadFile = function (serverURI, fileURI) {
+    	
+		var q = $q.defer();			
+		var uri = encodeURI(serverURI);
+
+		var ft = new FileTransfer();
+		var options = null;
+
+		function win(r) {
+			q.resolve(r);
 		}
-		   
-	  	return q.promise;    
-	};
-
-	CordovaFileTransfer.uploadMultipleFiles = function(files) {
-		/* [ { fileName : "", fileURI : "" } ] */
-		var q = $q.defer();  
-		var defs = new Array();
-
-		for(var index = 0; index < files.length; index++ ) {
-			var fileURI = files[index]['fileURI'];
-			var fileName = files[index]['fileName'];
-			defs.push( CordovaFileTransfer.uploadFile(fileURI, fileName) );
+			
+		function fail(e) {
+			q.reject(e);
 		}
 
-		$q.all(defs).then(
-		function(response) {
-			q.resolve(response);
-		},
-		function(response) {
-			q.reject(response);
-		});
+		ft.onprogress = function (progress) {
+			q.notify(progress);
+		};
 
+
+		ft.download(uri, fileURI, win, fail, options);
+							
 		return q.promise;
-	};
-
-	CordovaFileTransfer.getFileDownloadURL = function(fileName) {
-		return  config.fileDownloadServlet + "?fileName=" + fileName + ""; 
-	};
-
-	CordovaFileTransfer.getDocumentDownloadURL = function(fileName) {
-		return  config.fileDownloadServlet + "?isDocument=true" + "&fileName=" + fileName + "" ;
-	};
- 
- 	return CordovaFileTransfer;
- 
+						
+    };
+    
+    AngularCordovaFileTransfer.uploadMultipleFiles = function(serverURI, files) {
+    	/* [ { fileName : "", fileURI : "" } ] */
+    	var q = $q.defer();		
+    	var defs = new Array();
+    	
+    	for(var index = 0; index < files.length; index++ ) {
+    		var fileURI = files[index]['fileURI'];
+    		var fileName = files[index]['fileName'];
+    		defs.push( AngularCordovaFileTransfer.uploadFile(serverURI, fileURI, fileName) );
+    	}
+    	
+    	$q.all(defs).then(
+    	function(response) {
+    		q.resolve(response);
+    	},
+    	function(response) {
+    		q.reject(response);
+    	});
+    	
+    	return q.promise;
+    };
+	
+	return AngularCordovaFileTransfer;
+	
 }]);

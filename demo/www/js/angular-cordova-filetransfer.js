@@ -8,7 +8,7 @@ angular.module('starter.services').factory('AngularCordovaFileTransfer', ['$q', 
     		fileName = fileURI.substr( fileURI.lastIndexOf("/") + 1 );
     	}
     	
-    	var q = $q.defer();			
+    	var q = $q.defer();
 		var uri = encodeURI(serverURI);
 		
 		var options = new FileUploadOptions();

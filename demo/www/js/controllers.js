@@ -1,26 +1,18 @@
-var imageScope = "";
-
 angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {})
 
-.controller('ImageUploadCtrl', function ($scope, $ionicPlatform, $ionicPopup, $ionicLoading, AngularCordovaFileTransfer) {
-
-	imageScope = $scope;
-	
-	
-	console.log("In ImageUploadCtrl");
+.controller('ImageUploadCtrl', function ($scope, $ionicPlatform, $ionicPopup, $ionicLoading, $timeout, AngularCordovaFileTransfer) {
 
 	$scope.showImageSelectButton = true;
 	$scope.imageSelected = false;
+	$scope.imageUploaded = false;
 
 	$ionicPlatform.ready(function () {
 		
 		console.log("In ionicPlatform ready");
 
 		$scope.showImageSelectButton = typeof navigator.camera != "undefined";
-		
-		console.log("$scope.showImageSelectButton: " + $scope.showImageSelectButton);
 
 		$scope.selectImage = function () {
 			navigator.camera.getPicture($scope.imageSelectSuccess, $scope.imageSelectFailure, {
@@ -56,21 +48,45 @@ angular.module('starter.controllers', [])
 				template: 'Uploading...'
 			});
 	  
-			var serverURI = "http://192.168.10.177:10080/FileHandlingServlet/UploadFile";
+			var serverURI = "http://192.168.0.108:8080/FileHandlingServlet/UploadFile";
 			AngularCordovaFileTransfer.uploadFile(serverURI, $scope.imageUrl)
 			.then(
 			function(res) {
 				
-				$ionicLoading.hide();
+				$scope.imageUploaded = true;
+				delete $scope.imageUrl;
+				$scope.showImageSelectButton = true;
+				$scope.imageSelected = false;
+				window.plugins.toast.showLongCenter("Image Uploaded Successfully...");
 				console.log("success", res);
+
+				$timeout($ionicLoading.hide);
 				
 			},
 			function(err) {
 				
 				$ionicLoading.hide();
+				window.plugins.toast.showLongCenter("Error Occurred While Uploading File...");
 				console.log("error", err);
 				
-			});
+			},
+			function (progress) {
+
+				if( !$scope.imageUploaded ) {
+
+					$scope.downloadProgress = (progress.loaded / progress.total) * 100;
+					$ionicLoading.show({
+						template: 'Uploading... (' + Math.round($scope.downloadProgress) + '%)'
+					});
+
+				}
+				else {
+
+					$ionicLoading.hide();
+
+				}
+      			
+        	});
 		};
 		
 		if(!$scope.$root.$$phase) {

@@ -12,35 +12,51 @@ angular.module('starter.services').factory('AngularCordovaFileTransfer', ['$q', 
 		var uri = encodeURI(serverURI);
 		
 		var options = new FileUploadOptions();
-		options.fileKey="file";
-		options.fileName=fileName;
+		options.fileKey = "file";
+		options.fileName = fileName;
 		
 		var ft = new FileTransfer();
 		
 		function win(r) {
-			console.log(JSON.stringify(r));
-			q.resolve(r.response);
+			q.resolve(r);
 		}
 			
 		function fail(e) {
-			console.log(JSON.stringify(e));
 			q.reject(e);
 		}
 		
-		console.log("Uploading File");
-		console.log("fileURI : " + fileURI);
-		console.log("fileName : " + fileName);
+		ft.onprogress = function (progress) {
+        	q.notify(progress);
+        };
 		
-		if(fileURI.startsWith('http') || fileURI.startsWith('https')){//File is already on server
-			var response = {
-				"fileName" : fileName,
-				"successMessage" : "File Uploaded",
-				"status" : 200
-			}
-			q.resolve(JSON.stringify(response));
-		} else {//Local file
-			ft.upload(fileURI, uri, win, fail, options);
+		
+		ft.upload(fileURI, uri, win, fail, options);
+							
+		return q.promise;				
+    };
+
+    AngularCordovaFileTransfer.downloadFile = function (serverURI, fileURI) {
+    	
+    	var q = $q.defer();			
+		var uri = encodeURI(serverURI);
+		
+		var ft = new FileTransfer();
+		var options = null;
+		
+		function win(r) {
+			q.resolve(r);
 		}
+			
+		function fail(e) {
+			q.reject(e);
+		}
+		
+		ft.onprogress = function (progress) {
+        	q.notify(progress);
+        };
+		
+		
+		ft.download(uri, fileURI, win, fail, options);
 							
 		return q.promise;				
     };
